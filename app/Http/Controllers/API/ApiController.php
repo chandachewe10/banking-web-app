@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use App\Notifications\OtpNotification;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Models\User;
+
+class ApiController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        try{
+
+        
+        $request->validate([
+            'email' => 'required|email|max:255|unique:users,email',
+            'phone' => 'required|numeric|unique:users,phone',
+           
+        ]);
+
+
+        $user = User::create([
+            'email' => $request->email,
+            'phone' => $request->phone,
+            
+           
+        ]);
+
+
+       $token = $user->createToken('react-client-token')->plainTextToken;
+
+   
+
+       
+           // send OTP notification via email
+        $otpCode = rand(100000, 999999);
+        $user->otp_code = $otpCode;
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        $user->notify(new OtpNotification($otpCode));
+
+        //  send OTP notification via sms
+       $this->sendOtpSms($request->phone,$otpCode);
+
+
+        return response()->json([
+        'email' => $user->email,
+        'phone' => $user->phone,
+        'token' => $token,
+        ], 201); 
+    }
+        catch(\Exception $e){
+            Log::error('Error in store method: '.$e->getMessage());
+            return response()->json(['error' => 'An error occurred while processing your request '.$e->getMessage()], 500);
+        }
+        
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    public function sendOtpSms($phoneNumber, $otp)
+{
+    $message = 'Your OTP verification code is '.$otp;
+
+    $base_uri = config('services.swiftsms.baseUri');
+    $endpoint = config('services.swiftsms.endpoint');
+    $senderId = config('services.swiftsms.senderId');
+    $token = config('services.swiftsms.token');
+
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
+    ])->get($base_uri.$endpoint, [
+        'sender_id' => $senderId,
+        'numbers' => $phoneNumber,
+        'message' => $message,
+    ]);
+
+    if ($response->successful()) {
+        return true;
+    }
+
+    Log::error('Swift SMS send failed', ['response' => $response->body()]);
+    return false;
+}
+}

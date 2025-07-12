@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
-
 use Spatie\Permission\Traits\HasRoles;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Traits\HasWallets;
@@ -24,11 +23,10 @@ class User extends Authenticatable implements FilamentUser
 {
    
     use HasFactory;
-  
     use Notifiable;
-
     use HasRoles;
     use HasPanelShield;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +36,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'text'
     ];
