@@ -115,7 +115,7 @@ class ApiController extends Controller
 
     public function sendOtpSms($phoneNumber, $otp)
 {
-    $message = 'Your OTP verification code is '.$otp;
+    $message = 'Your OTP verification code is '.$otp. ' your OTP is valid for 10 minutes.';
 
     $base_uri = config('services.swiftsms.baseUri');
     $endpoint = config('services.swiftsms.endpoint');
@@ -138,5 +138,32 @@ class ApiController extends Controller
 
     Log::error('Swift SMS send failed', ['response' => $response->body()]);
     return false;
+}
+
+public function verifyOtp(Request $request)
+{
+    try{
+    $request->validate([
+        'otp_code' => 'required|numeric|exists:users,otp_code',
+        'email' => 'required|email|exists:users,email',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || $user->otp_code !== $request->otp_code || now()->greaterThan($user->otp_expires_at)) {
+        return response()->json(['error' => 'Invalid or expired OTP code'], 422);
+    }
+
+    $user->is_verified = true;
+    $user->otp_code = null;
+    $user->otp_expires_at = null;
+    $user->save();
+
+    return response()->json(['message' => 'OTP verified successfully'], 200);
+}
+    catch(\Exception $e){
+        Log::error('Error in verifyOtp method: '.$e->getMessage());
+        return response()->json(['error' => 'An error occurred while processing your request '.$e->getMessage()], 500);
+    }
 }
 }

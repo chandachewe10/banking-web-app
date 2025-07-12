@@ -10,4 +10,6 @@ Route::get('/user', function (Request $request) {
 
 
 Route::resource('otp', ApiController::class)->only(['index', 'store', 'update', 'destroy']);
+Route::post('/verifyOtp', [ApiController::class, 'verifyOtp'])
+->middleware('auth:sanctum');
 
