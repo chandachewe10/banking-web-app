@@ -37,7 +37,7 @@ public $otpCode;
         return (new MailMessage)
         ->greeting('OTP NOTIFICATION')
             ->line('Your OTP verification code is '.$this->otpCode)
-             ->line('Please use this code to proceed with the registration process')
+             ->line('Your OTP is valid for 10 minutes.')
             ->line('Thank you for using our application!');
     }
 

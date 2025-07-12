@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::resource('otp', ApiController::class)->only(['index', 'store', 'update', 'destroy']);
+Route::resource('register', ApiController::class)->only(['index', 'store', 'update', 'destroy']);
 Route::post('/verifyOtp', [ApiController::class, 'verifyOtp'])
 ->middleware('auth:sanctum');
 

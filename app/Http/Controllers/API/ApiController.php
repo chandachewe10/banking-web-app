@@ -62,21 +62,33 @@ class ApiController extends Controller
         $user->otp_expires_at = now()->addMinutes(10);
         $user->save();
 
-        $user->notify(new OtpNotification($otpCode));
+      //  $user->notify(new OtpNotification($otpCode));
 
         //  send OTP notification via sms
-       $this->sendOtpSms($request->phone,$otpCode);
+      // $this->sendOtpSms($request->phone,$otpCode);
 
 
-        return response()->json([
+     return response()->json([
+    'success' => true,
+    'message' => 'User registered successfully',
+    'data' => [
         'email' => $user->email,
         'phone' => $user->phone,
         'token' => $token,
-        ], 201); 
+      
+    ]
+], 201);
+
+
     }
         catch(\Exception $e){
             Log::error('Error in store method: '.$e->getMessage());
-            return response()->json(['error' => 'An error occurred while processing your request '.$e->getMessage()], 500);
+           return response()->json([
+    'success' => false,
+    'message' => 'An error occurred while processing your request',
+    'error' => $e->getMessage(), 
+], 500);
+
         }
         
     }
@@ -159,11 +171,19 @@ public function verifyOtp(Request $request)
     $user->otp_expires_at = null;
     $user->save();
 
-    return response()->json(['message' => 'OTP verified successfully'], 200);
+    return response()->json([
+  'success' => true,
+  'message' => 'OTP verified successfully'
+], 200);
 }
     catch(\Exception $e){
         Log::error('Error in verifyOtp method: '.$e->getMessage());
-        return response()->json(['error' => 'An error occurred while processing your request '.$e->getMessage()], 500);
+        return response()->json([
+    'success' => false,
+    'message' => 'An error occurred while processing your request',
+    'error' => $e->getMessage(), 
+], 500);
+
     }
 }
 }
