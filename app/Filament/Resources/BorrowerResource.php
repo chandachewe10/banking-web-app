@@ -23,6 +23,7 @@ class BorrowerResource extends Resource
     protected static ?string $recordTitleAttribute = 'Credit Evaluation';
     protected static ?string $title = 'Credit Evaluation';
     protected static ?string $navigationGroup = 'Credit Module';
+        protected static ?int $sort = 1;
 
     public static function form(Form $form): Form
     {
