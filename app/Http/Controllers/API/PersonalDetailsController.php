@@ -61,6 +61,7 @@ class PersonalDetailsController extends Controller
         'branchName' => 'nullable|string|max:255',
         'branchCode' => 'nullable|string|max:50',
         'accountNumber' => 'nullable|string|max:50',
+        'accountType' => 'nullable|string|max:250',
     ]);
 
     $borrower = Borrower::create([
@@ -91,6 +92,7 @@ class PersonalDetailsController extends Controller
     'bank_branch' => $validatedData['branchName'] ?? null,
     'bank_sort_code' => $validatedData['branchCode'] ?? null,
     'bank_account_number' => $validatedData['accountNumber'] ?? null,
+    'bank_account_type' => $validatedData['accountType'] ?? null,
 ]);
 
 
