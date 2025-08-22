@@ -16,17 +16,20 @@ use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Activitylog\LogOptions;
 use Filament\Panel;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasMedia
 {
-   
+
     use HasFactory;
     use Notifiable;
     use HasRoles;
     use HasPanelShield;
     use HasApiTokens;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -71,17 +74,17 @@ class User extends Authenticatable implements FilamentUser
         'profile_photo_url',
     ];
 
-   
+
 
    public function canAccessPanel(Panel $panel): bool
 {
 
-    
-   
 
-    return true; 
+
+
+    return true;
 }
 
 
-   
+
 }
