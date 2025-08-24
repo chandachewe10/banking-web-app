@@ -65,7 +65,7 @@ class ApiController extends Controller
       //  $user->notify(new OtpNotification($otpCode));
 
         //  send OTP notification via sms
-      // $this->sendOtpSms($request->phone,$otpCode);
+       $this->sendOtpSms($request->phone,$otpCode);
 
 
      return response()->json([
