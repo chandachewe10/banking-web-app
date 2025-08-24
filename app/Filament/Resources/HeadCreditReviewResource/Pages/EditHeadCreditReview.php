@@ -6,6 +6,7 @@ use App\Filament\Resources\HeadCreditReviewResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
 
 class EditHeadCreditReview extends EditRecord
 {
@@ -18,6 +19,14 @@ class EditHeadCreditReview extends EditRecord
         ];
 
 
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $data['verified_by'] =auth()->user()->id;
+        $record->update($data);
+
+        return $record;
     }
 
      protected function getRedirectUrl(): string
