@@ -47,7 +47,7 @@ return new class extends Migration
             $table->foreign('verified_by')
                     ->nullable()
                     ->references('id')
-                    
+
                     ->on('users')
                     ->onDelete('cascade');
             $table->boolean('is_approved_on_step_one')->default(false);

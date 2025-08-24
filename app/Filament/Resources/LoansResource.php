@@ -199,7 +199,47 @@ class LoansResource extends Resource
                 Tables\Columns\TextColumn::make('loan_duration')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('transaction_reference')
+              Tables\Columns\TextColumn::make('is_approved_on_step_one')
+                    ->label('Credit Officer Approval')
+                    ->badge()
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
+                    ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('is_approved_on_step_two')
+                    ->badge()
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
+                    ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
+                    ->label('Head Credit Officer Approval')
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('is_approved_on_step_three')
+                    ->label('Branch Manager Approval')
+                    ->badge()
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
+                    ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('is_approved_on_step_four')
+                    ->label('Finance Approval')
+                    ->badge()
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
+                    ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
