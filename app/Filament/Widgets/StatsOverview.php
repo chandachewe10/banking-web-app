@@ -39,7 +39,7 @@ class StatsOverview extends BaseWidget
                 ->where('loan_status', 'approved')
                 ->count())
                 ->description('Active Loans')
-                ->descriptionIcon('fas-wallet')
+                ->descriptionIcon('heroicon-o-credit-card')
                 ->color('info')
                 ->url('admin/loans'),
 
@@ -49,7 +49,7 @@ class StatsOverview extends BaseWidget
                 ->where('loan_status', 'processing')
                 ->count(), )
                 ->description('Pending Loans')
-                ->descriptionIcon('fas-clock')
+                ->descriptionIcon('heroicon-o-clock')
                 ->color('primary')
                 ->url('admin/loans?activeTab=Processing'),
             Stat::make('Defaulted Loans', Loans::query()
@@ -58,7 +58,7 @@ class StatsOverview extends BaseWidget
                 ->where('loan_status', 'defaulted')
                 ->count(), )
                 ->description('Defaulted Loans')
-                ->descriptionIcon('fas-sync')
+                ->descriptionIcon('heroicon-o-clipboard')
                 ->color('danger')
                 ->url('admin/loans?activeTab=Over+Due'),
 
@@ -69,7 +69,7 @@ class StatsOverview extends BaseWidget
                 ->where('loan_status', 'fully_paid')
                 ->count())
                 ->description('Fully Paid Loans')
-                ->descriptionIcon('fas-wallet')
+                ->descriptionIcon('heroicon-o-credit-card')
                 ->color('success')
                 ->url('admin/loans?activeTab=Settled')
 

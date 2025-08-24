@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Loans;
+use App\Models\Borrower;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -49,12 +50,12 @@ class SignatureController extends Controller
 
         try {
             // Find user by email
-            $user = User::where('email', $request->email)->first();
+            $borrowerFiles = Borrower::where('email', $request->email)->first();
 
-            if (!$user) {
+            if (!$borrowerFiles) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'User not found'
+                    'message' => 'Borrower not found'
                 ], 404);
             }
 
@@ -62,25 +63,31 @@ class SignatureController extends Controller
             $uploadedFiles = [];
 
             if ($request->has('signatureUri')) {
-                $uploadedFiles['signatureUri'] = $this->processBase64File($request->signatureUri, 'signatureUri', $user->id, ['jpeg', 'png', 'pdf']);
+                $uploadedFiles['signatureUri'] = $this->processBase64File($request->signatureUri, 'signatureUri', $borrowerFiles->id, ['jpeg', 'png', 'pdf']);
             }
 
 
             // Add media to user document
             foreach ($uploadedFiles as $collection => $fileInfo) {
-                $user->addMedia($fileInfo['path'])
+                $borrowerFiles->addMedia($fileInfo['path'])
                     ->toMediaCollection($collection, 'borrowers');
             }
 
             $caseNumber = rand(100000, 999999);
-            $caseHandler = User::where('caseNumber', "=", NULL)->first();
-            $caseHandler->caseNumber = $caseNumber;
+            $caseHandler = User::where('case_number', "=", NULL)->first();
+            $caseHandler->case_number = $caseNumber;
             $caseHandler->save();
 
             //Update the CaseNumber into the Loan Number
-            $loan = Loans::where('email', "=", $request->email)->where('loan_status', "=", 'processing')->first();
-            $loan->caseNumber = $caseNumber;
+            $borrower = Borrower::where('email', "=", $request->email)->latest()->first();
+            $loan = Loans::where('borrower_id', "=", $borrower->id)->where('loan_status', "=", 'processing')->first();
+            $loan->case_number = $caseNumber;
             $loan->save();
+
+
+            //Update the CaseNumber to the Borrowe
+            $borrower = Borrower::where('email', "=", $request->email)->latest()->first();
+            $borrower->save();
 
 
 
@@ -88,8 +95,7 @@ class SignatureController extends Controller
                 'success' => true,
                 'message' => 'Signature uploaded successfully',
                 'data' => [
-                    'email' => $user->email,
-                    'user_id' => $user->id,
+                    'email' => $borrowerFiles->email,
                     'uploaded_files' => array_keys($uploadedFiles),
                     'caseNumber' => $caseNumber
                 ]

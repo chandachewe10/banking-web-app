@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Borrower extends Model
+class Borrower extends Model implements HasMedia
 {
     use SoftDeletes;
-    
+    use InteractsWithMedia;
+
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +46,8 @@ class Borrower extends Model
     'bank_branch',
     'bank_sort_code',
     'bank_account_number',
+    'bank_account_name',
+    'case_number'
 ];
 
 }

@@ -65,7 +65,8 @@ class LoanDetailsController extends Controller
         'arrangement_fee' => $validatedData['arrangementFee'],
         'processing_fee' => $validatedData['processingFee'],
         'insurance_fee' => $validatedData['insuranceFee'],
-        'total_repayment' => number_format($validatedData['amount'] + $validatedData['totalInterestFee'],2),
+        'total_repayment' => ($validatedData['amount'] + $validatedData['totalInterestFee']),
+        'verified_by' => NULL
 
 
     ]);

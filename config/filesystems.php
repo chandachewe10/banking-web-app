@@ -41,7 +41,7 @@ return [
        'borrowers' => [
             'driver' => 'local',
             'root' => public_path('BORROWERFILES'),
-            'url' => env('APP_URL'),
+            'url' => env('APP_URL').'/BORROWERFILES',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

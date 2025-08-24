@@ -31,7 +31,7 @@ class PersonalDetailsController extends Controller
     public function store(Request $request)
 {
 
-    
+
     try{
     $validatedData = $request->validate([
         'firstName' => 'required|string|max:255',
@@ -67,32 +67,32 @@ class PersonalDetailsController extends Controller
     $borrower = Borrower::create([
     'first_name' => $validatedData['firstName'],
     'last_name' => $validatedData['lastName'],
-    'middle_name' => $validatedData['middleName'] ?? null, 
+    'middle_name' => $validatedData['middleName'] ?? null,
     'gender' => $validatedData['gender'],
     'identification' => $validatedData['citizenId'],
-    'title' => $validatedData['title'], 
+    'title' => $validatedData['title'],
     'dob' => $validatedData['dateOfBirth'],
     'mobile' => $validatedData['phoneNumber'],
     'email' => $validatedData['email'],
     'address' => $validatedData['address'],
     'city' => $validatedData['district'],
     'province' => $validatedData['province'],
-    'country' => $validatedData['country'], 
-    'marital_status' => $validatedData['maritalStatus'], 
+    'country' => $validatedData['country'],
+    'marital_status' => $validatedData['maritalStatus'],
     'zipcode' => $validatedData['zipCode'] ?? null,
     'occupation' => $validatedData['occupation'] ?? null,
-    'employer' => $validatedData['employer'] ?? null, 
-    'employee_number' => $validatedData['employeeNumber'] ?? null, 
-    'employer_number' => $validatedData['employerNumber'] ?? null, 
-    'employer_address' => $validatedData['employerAddress'] ?? null, 
-    'employee_start_date' => $validatedData['employeeStartDate'] ?? null, 
-    'employer_email' => $validatedData['employerEmail'] ?? null,  
-    'monthly_income' => $validatedData['monthlyIncome'] ?? null, 
+    'employer' => $validatedData['employer'] ?? null,
+    'employee_number' => $validatedData['employeeNumber'] ?? null,
+    'employer_number' => $validatedData['employerNumber'] ?? null,
+    'employer_address' => $validatedData['employerAddress'] ?? null,
+    'employee_start_date' => $validatedData['employeeStartDate'] ?? null,
+    'employer_email' => $validatedData['employerEmail'] ?? null,
+    'monthly_income' => $validatedData['monthlyIncome'] ?? null,
     'bank_name' => $validatedData['bankName'] ?? null,
     'bank_branch' => $validatedData['branchName'] ?? null,
     'bank_sort_code' => $validatedData['branchCode'] ?? null,
     'bank_account_number' => $validatedData['accountNumber'] ?? null,
-    'bank_account_type' => $validatedData['accountType'] ?? null,
+    'bank_account_name' => $validatedData['accountType'] ?? null,
 ]);
 
 
@@ -109,7 +109,7 @@ class PersonalDetailsController extends Controller
            return response()->json([
     'success' => false,
     'message' => 'An error occurred while processing your request',
-    'error' => $e->getMessage(), 
+    'error' => $e->getMessage(),
 ], 500);
 
         }

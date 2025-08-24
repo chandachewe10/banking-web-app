@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Borrower;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -19,7 +20,7 @@ class DocumentController extends Controller
             'idBack' => 'required|string',
             'selfie' => 'required|string',
             'bankStatement' => 'required|string',
-            'payslip' => 'sometimes|string',
+            'payslip' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -32,7 +33,7 @@ class DocumentController extends Controller
 
         try {
             // Find user by email
-            $user = User::where('email', $request->email)->first();
+            $user = Borrower::where('email', $request->email)->first();
 
             if (!$user) {
                 return response()->json([
