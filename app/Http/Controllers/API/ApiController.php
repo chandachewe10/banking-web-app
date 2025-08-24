@@ -62,7 +62,7 @@ class ApiController extends Controller
         $user->otp_expires_at = now()->addMinutes(10);
         $user->save();
 
-      //  $user->notify(new OtpNotification($otpCode));
+      $user->notify(new OtpNotification($otpCode));
 
         //  send OTP notification via sms
        $this->sendOtpSms($request->phone,$otpCode);
