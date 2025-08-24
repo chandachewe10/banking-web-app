@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LoansResource\Pages;
-use App\Filament\Resources\LoansResource\RelationManagers;
-use App\Models\Loans;
+use App\Filament\Resources\BranchManagerReviewResource\Pages;
+use App\Filament\Resources\BranchManagerReviewResource\RelationManagers;
+use App\Models\Loans as BranchManagerReview;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,22 +13,20 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LoansResource extends Resource
+class BranchManagerReviewResource extends Resource
 {
-    protected static ?string $model = Loans::class;
+    protected static ?string $model = BranchManagerReview::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-    protected static ?string $navigationLabel = 'Credit Evaluation';
-    protected static ?string $modelLabel = 'Credit Evaluation';
-    protected static ?string $recordTitleAttribute = 'Credit Evaluation';
-    protected static ?string $title = 'Credit Evaluation';
+    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationLabel = 'Branch Manager Evaluation';
+    protected static ?string $modelLabel = 'Branch Manager Evaluation';
+    protected static ?string $recordTitleAttribute = 'Branch Manager Evaluation';
+    protected static ?string $title = 'Branch Manager Evaluation';
     protected static ?string $navigationGroup = 'Credit Module';
-    protected static ?int $sort = 2;
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::where('case_number', auth()->user()->case_number)->count();
-    }
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -106,7 +104,7 @@ class LoansResource extends Resource
                             ->label('CRB Score')
                             ->prefixIcon('heroicon-o-credit-card')
                             ->required()
-
+                            ->disabled()
                             ->options([
                                 'A' => 'A',
                                 'B' => 'B',
@@ -118,6 +116,7 @@ class LoansResource extends Resource
                             ->label('Employer Verification')
                             ->prefixIcon('heroicon-o-credit-card')
                             ->required()
+                            ->disabled()
                             ->options([
                                 'Valid Employee' => 'Valid Employee',
                                 'Former Employee' => 'Former Employee',
@@ -128,6 +127,7 @@ class LoansResource extends Resource
                         Forms\Components\RichEditor::make('due_diligence')
                             ->label('Due Diligence Report')
                             ->required()
+                            ->disabled()
                             ->disableToolbarButtons([
                                 'attachFiles',
                                 'codeBlock',
@@ -138,10 +138,12 @@ class LoansResource extends Resource
                             ->minLength(2)
                             ->maxLength(160)
                             ->rows(5)
+                            ->disabled()
                             ->columnSpan(2),
                         Forms\Components\RichEditor::make('credit_appraisal_report')
                             ->label('Credit Appraisal Report')
                             ->required()
+                            ->disabled()
                             ->disableToolbarButtons([
                                 'attachFiles',
                                 'codeBlock',
@@ -149,6 +151,38 @@ class LoansResource extends Resource
                             ->columnSpan(2),
 
                         Forms\Components\Select::make('is_approved_on_step_one')
+                            ->label('Decision by Credit Officer')
+                            ->prefixIcon('heroicon-o-credit-card')
+                            ->required()
+                            ->disabled()
+                            ->columnSpan(2)
+                            ->options([
+
+                                0 => 'Reject',
+                                1 => 'Approve',
+                            ]),
+                            Forms\Components\Select::make('is_approved_on_step_two')
+                            ->label('Decision by Head Credit Officer')
+                            ->prefixIcon('heroicon-o-credit-card')
+                            ->required()
+                            ->disabled()
+                            ->columnSpan(2)
+                            ->options([
+
+                                0 => 'Reject',
+                                1 => 'Approve',
+                            ]),
+
+                        Forms\Components\Select::make('verified_by')
+                            ->prefixIcon('heroicon-o-user')
+                            ->relationship('verifiedBy', 'name')
+                            ->preload()
+                            ->disabled()
+                            ->searchable()
+                            ->columnSpan(2)
+                            ->required(),
+
+                        Forms\Components\Select::make('is_approved_on_step_three')
                             ->label('Your Decision')
                             ->prefixIcon('heroicon-o-credit-card')
                             ->required()
@@ -160,15 +194,6 @@ class LoansResource extends Resource
                             ]),
 
 
-                    //     Forms\Components\TextInput::make('verified_by')
-                    // ->numeric()
-                    // ->disabled()
-                    // ->columnSpan(2)
-                    // ->default(5),
-
-
-
-
                     ]),
 
             ]);
@@ -177,10 +202,7 @@ class LoansResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(function () {
-                return static::getModel()::query()
-                    ->where('case_number', auth()->user()->case_number);
-            })
+
             ->columns([
                 Tables\Columns\TextColumn::make('borrower.first_name')
                     ->numeric()
@@ -199,7 +221,7 @@ class LoansResource extends Resource
                 Tables\Columns\TextColumn::make('loan_duration')
                     ->searchable(),
 
-              Tables\Columns\TextColumn::make('is_approved_on_step_one')
+                Tables\Columns\TextColumn::make('is_approved_on_step_one')
                     ->label('Credit Officer Approval')
                     ->badge()
                     ->colors([
@@ -241,6 +263,7 @@ class LoansResource extends Resource
                     ])
                     ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -292,14 +315,12 @@ class LoansResource extends Resource
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLoans::route('/'),
-            'create' => Pages\CreateLoans::route('/create'),
-            'view' => Pages\ViewLoans::route('/{record}'),
-            'edit' => Pages\EditLoans::route('/{record}/edit'),
+            'index' => Pages\ListBranchManagerReviews::route('/'),
+            'create' => Pages\CreateBranchManagerReview::route('/create'),
+            'edit' => Pages\EditBranchManagerReview::route('/{record}/edit'),
         ];
     }
 }

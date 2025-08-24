@@ -150,7 +150,7 @@ class HeadCreditReviewResource extends Resource
                             ->columnSpan(2),
 
                         Forms\Components\Select::make('is_approved_on_step_one')
-                            ->label('Decision')
+                            ->label('Decision by Credit Officer')
                             ->prefixIcon('heroicon-o-credit-card')
                             ->required()
                             ->disabled()
@@ -190,10 +190,7 @@ class HeadCreditReviewResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(function () {
-                return static::getModel()::query()
-                    ->where('case_number', auth()->user()->case_number);
-            })
+
             ->columns([
                 Tables\Columns\TextColumn::make('borrower.first_name')
                     ->numeric()
