@@ -3,9 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Loans extends Model
+class Loans extends Model implements HasMedia
 {
+
+    use LogsActivity;
+    use InteractsWithMedia;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll();
+    }
 
 
     public function loan_type()
@@ -60,6 +73,9 @@ class Loans extends Model
         'is_approved_on_step_two',
         'is_approved_on_step_three',
         'is_approved_on_step_four',
+        'loan_number',
+        'physical_verification',
+        'loan_agreement_file_path'
 
 
 

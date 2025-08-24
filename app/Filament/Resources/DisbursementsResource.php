@@ -13,11 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Hidden;
+use App\helpers\CreateLinks;
 
 class DisbursementsResource extends Resource
 {
     protected static ?string $model = Disbursements::class;
-
+    protected static ?int $sort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Disbursements';
     protected static ?string $modelLabel = 'Disbursements';
@@ -211,6 +212,7 @@ class DisbursementsResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $create_link = new CreateLinks();
         return $table
 
             ->columns([
@@ -219,6 +221,9 @@ class DisbursementsResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('loan_status')
+                    ->badge()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('loan_number')
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('principal_amount')
@@ -273,6 +278,13 @@ class DisbursementsResource extends Resource
                     ])
                     ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
                     ->searchable(),
+
+                    Tables\Columns\TextColumn::make('loan_agreement_file_path')
+                    ->label('Loan Agreement Form')
+                    ->formatStateUsing(
+
+                        fn(string $state) => $create_link::goTo(env('APP_URL') . '/' . $state, 'download', 'loan agreement form'),
+                    ),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

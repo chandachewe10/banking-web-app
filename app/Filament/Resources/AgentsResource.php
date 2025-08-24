@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AgentsResource\Pages;
 use App\Filament\Resources\AgentsResource\RelationManagers;
-use App\Models\Agents;
+use App\Models\Loans as Agents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Set;
+use Filament\Forms\Components\Hidden;
+
 
 class AgentsResource extends Resource
 {
@@ -26,71 +30,59 @@ class AgentsResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('national_id')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('branch_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('cases_handled')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\TextInput::make('documents_collected')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\TextInput::make('performance_score')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\Toggle::make('active')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('last_login_at'),
-            ]);
-    }
+       return $form
+    ->schema([
+        Forms\Components\TextInput::make('loan_number')
+            ->live(onBlur:true)
+            ->helperText('Click outside the field to check whether the Loan has been approved or Not')
+            ->required()
+            ->afterStateUpdated(function ($state, Set $set) {
+                if ($state) {
+                    $approvalStatus = \App\Models\Loans::where('loan_number', $state)->first();
+                    if ($approvalStatus) {
+                        $set('physical_verification', $approvalStatus->loan_status == 'approved' ? 'Loan has been approved' : 'Loan Not-Found');
+                    } else {
+                        $set('physical_verification', 'Not-Found');
+                    }
+                }
+            }),
+
+        Forms\Components\TextInput::make('physical_verification')
+            ->required()
+             ->readOnly()
+            ->maxLength(255),
+
+
+
+        SpatieMediaLibraryFileUpload::make('contract')
+            ->disk('borrowers')
+            ->collection('contracts')
+            ->visibility('public')
+            ->required()
+            ->multiple()
+            ->minFiles(0)
+            ->maxFiles(10)
+            ->maxSize(5120)
+            ->columnSpan(2)
+            ->openable(),
+    ]);
+}
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('loan_number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('national_id')
+                Tables\Columns\TextColumn::make('physical_verification')
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('branch_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('cases_handled')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('documents_collected')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('performance_score')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('active')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('last_login_at')
-                    ->dateTime()
-                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -105,11 +97,11 @@ class AgentsResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+               //Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+               Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

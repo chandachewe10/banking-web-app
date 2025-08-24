@@ -30,7 +30,13 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     use HasPanelShield;
     use HasApiTokens;
     use InteractsWithMedia;
-
+    use LogsActivity;
+    
+     public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logExcept(['password', 'remember_token']);
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -71,7 +77,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
      * @var array<int, string>
      */
     protected $appends = [
-        'profile_photo_url',
+      //  'profile_photo_url',
     ];
 
 

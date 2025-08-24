@@ -23,6 +23,7 @@ class LoanTypeResource extends Resource
     protected static ?string $recordTitleAttribute = 'Loan Types';
     protected static ?string $title = 'Loan Types';
     protected static ?string $navigationGroup = 'Finance Module';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

@@ -74,7 +74,9 @@ class SignatureController extends Controller
             }
 
             $caseNumber = rand(100000, 999999);
-            $caseHandler = User::where('case_number', "=", NULL)->first();
+           $caseHandler = User::role('Credit Officer') 
+          ->whereNull('case_number')             
+          ->latest()->first();
             $caseHandler->case_number = $caseNumber;
             $caseHandler->save();
 
@@ -85,7 +87,7 @@ class SignatureController extends Controller
             $loan->save();
 
 
-            //Update the CaseNumber to the Borrowe
+            //Update the CaseNumber to the Borrower
             $borrower = Borrower::where('email', "=", $request->email)->latest()->first();
             $borrower->save();
 

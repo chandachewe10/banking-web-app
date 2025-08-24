@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LoanAgreementFormsResource\Pages;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\LoanAgreementFormsResource\RelationManagers;
 use App\Models\LoanAgreementForms;
 use Filament\Forms;
@@ -10,30 +11,50 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class LoanAgreementFormsResource extends Resource
 {
     protected static ?string $model = LoanAgreementForms::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Agreement Forms';
-    protected static ?string $modelLabel = 'Agreement Forms';
-    protected static ?string $recordTitleAttribute = 'Agreement Forms';
-    protected static ?string $title = 'Agreement Forms';
-    protected static ?string $navigationGroup = 'Finance Module';    public static function form(Form $form): Form
+
+     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Loan Contracts';
+    protected static ?string $modelLabel = 'Loan Contracts';
+    protected static ?string $recordTitleAttribute = 'Loan Contracts';
+    protected static ?string $title = 'Loan Contracts';
+    protected static ?string $navigationGroup = 'Finance Module';
+    protected static ?int $navigationSort = 1;
+
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('loan_type_id')
+                Forms\Components\Select::make('loan_type_id')
+                    ->prefixIcon('heroicon-o-wallet')
+                    ->label('Choose Loan Type')
                     ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('loan_agreement_text')
+                    ->relationship('loan_type', 'loan_name')
+                    ->helperText('Please make sure you have added the loan type under loans to create the loan agreement form.')
+                    ->searchable()
+                    ->columnSpan(2)
+                    ->preload(),
+                RichEditor::make('loan_agreement_text')
+                    ->label('Create Form')
                     ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('activate_loan_agreement_form')
-                    ->required()
-                    ->numeric(),
+                    ->disableToolbarButtons([
+                        'attachFiles',
+                        'codeBlock',
+                    ])
+
+                    ->default('<p>[Company Name]</p><p>Lusaka Zambia</p><p>P.O BOX 1209,</p><p>Lusaka</p><p>10/09/09&nbsp;</p><p><br></p><p>Dear [Borrower Name],</p><h3><span style="text-decoration: underline;">REF:LOAN AGREEMENT FORM</span></h3><p>Dear [Borrower Name],</p><p>This agreement is made between [Company Name], referred to as the "Lender," and [Borrower Name], whose details are as follows:</p><ul><li>Name: [Borrower Name]</li><li>Email: [Borrower Email]</li><li>Phone: [Borrower Phone]</li><li>Loan Number: [Loan Number]</li><li>Loan Amount: [Loan Amount]</li><li>Loan Tenure: [Loan Tenure]</li><li>Loan Interest Percentage: [Loan Interest Percentage]</li><li>Loan Interest Fee: [Loan Interest Fee]</li></ul><p>The lender agrees to provide a loan of [Loan Amount] to the borrower under the following terms and conditions:............................</p><p>The borrower agrees to repay the loan amount in installments within the loan tenure period. By signing this agreement, the borrower acknowledges and agrees to the terms and conditions set forth herein.&nbsp;</p><p>Sincerely,</p><p>[Company Name]</p>')
+                    ->columnSpan(2)
             ]);
     }
 
@@ -41,20 +62,11 @@ class LoanAgreementFormsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('loan_type_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('activate_loan_agreement_form')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('loan_type.loan_name')
+                    ->label('Loan Type')
+                    ->searchable(),
+
+
             ])
             ->filters([
                 //
@@ -67,6 +79,9 @@ class LoanAgreementFormsResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 
