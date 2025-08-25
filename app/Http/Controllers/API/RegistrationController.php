@@ -35,27 +35,27 @@ class RegistrationController extends Controller
     {
         try{
 
-        
+
         $request->validate([
             'email' => 'required|email|max:255|unique:users,email',
             'phone' => 'required|numeric|unique:users,phone',
-           
+
         ]);
 
 
         $user = User::create([
             'email' => $request->email,
             'phone' => $request->phone,
-            
-           
+
+
         ]);
 
 
        $token = $user->createToken('react-client-token')->plainTextToken;
 
-   
 
-       
+
+
            // send OTP notification via email
         $otpCode = rand(100000, 999999);
         $user->otp_code = $otpCode;
@@ -75,7 +75,7 @@ class RegistrationController extends Controller
         'email' => $user->email,
         'phone' => $user->phone,
         'token' => $token,
-      
+
     ]
 ], 201);
 
@@ -86,11 +86,11 @@ class RegistrationController extends Controller
            return response()->json([
     'success' => false,
     'message' => 'An error occurred while processing your request',
-    'error' => $e->getMessage(), 
+    'error' => $e->getMessage(),
 ], 500);
 
         }
-        
+
     }
 
     /**
@@ -181,7 +181,7 @@ public function verifyOtp(Request $request)
         return response()->json([
     'success' => false,
     'message' => 'An error occurred while processing your request',
-    'error' => $e->getMessage(), 
+    'error' => $e->getMessage(),
 ], 500);
 
     }
