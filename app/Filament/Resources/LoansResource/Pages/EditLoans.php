@@ -24,6 +24,26 @@ class EditLoans extends EditRecord
         $data['verified_by'] =auth()->user()->id;
         $record->update($data);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         return $record;
     }
 

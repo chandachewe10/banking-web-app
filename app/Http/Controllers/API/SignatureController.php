@@ -74,11 +74,20 @@ class SignatureController extends Controller
             }
 
             $caseNumber = rand(100000, 999999);
-           $caseHandler = User::role('Credit Officer') 
-          ->whereNull('case_number')             
-          ->latest()->first();
-            $caseHandler->case_number = $caseNumber;
-            $caseHandler->save();
+            $caseHandler = User::role('Credit Officer')
+                ->whereNull('case_number')
+                ->latest()->first();
+
+                if($caseHandler) {
+                    // Assign the case number to the user
+                    $caseHandler->case_number = $caseNumber;
+                    $caseHandler->save();
+                } else {
+                    // If no available Credit Officer, assign to any Credit Officer (even if they have a case number)
+                    $caseHandler = User::role('Credit Officer')->latest()->first();
+                    $caseHandler->save();
+                }
+
 
             //Update the CaseNumber into the Loan Number
             $borrower = Borrower::where('email', "=", $request->email)->latest()->first();

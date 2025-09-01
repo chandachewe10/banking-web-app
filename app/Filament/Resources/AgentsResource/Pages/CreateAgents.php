@@ -22,6 +22,8 @@ class CreateAgents extends CreateRecord
         $status = $data['physical_verification'];
         $data = Loans::where('loan_number', $data['loan_number'])->first();
 
+        
+
         User::where('case_number', $data->case_number)
         ->update(['case_number' => null]); 
         if (!$data) {
