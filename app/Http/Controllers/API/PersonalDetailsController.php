@@ -40,7 +40,7 @@ class PersonalDetailsController extends Controller
         'gender' => 'required|in:male,female',
         'citizenId' => 'required|string|max:50|unique:borrowers,identification',
         'title' => 'required|string|max:10',
-        'dateOfBirth' => 'required|date',
+        'dateOfBirth' => 'required',
         'phoneNumber' => 'required|string|max:20|unique:borrowers,mobile',
         'email' => 'required|email|max:255|unique:borrowers,email',
         'address' => 'required|string|max:500',

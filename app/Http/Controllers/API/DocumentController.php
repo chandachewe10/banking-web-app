@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DocumentController extends Controller
 {
     public function uploadDocuments(Request $request)
     {
+        
+        Log::info('FRONT ID: '.$request->idFront);
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'idFront' => 'required|string',
