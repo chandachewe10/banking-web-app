@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Gate::policy(\App\Models\Borrower::class, \App\Policies\BorrowerPolicy::class);
         Gate::policy(\App\Models\Branches::class, \App\Policies\BranchesPolicy::class);
         Gate::policy(\App\Models\Disbursements::class, \App\Policies\DisbursementsPolicy::class);
@@ -28,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(\App\Models\Loans::class, \App\Policies\LoansPolicy::class);
         Gate::policy(\App\Models\LoanType::class, \App\Policies\LoanTypePolicy::class);
         Gate::policy(\App\Models\User::class, \App\Policies\UserPolicy::class);
+        Gate::policy(\Spatie\Activitylog\Models\Activity::class, \App\Policies\ActivityPolicy::class);
 
 
         Filament::registerNavigationGroups([
