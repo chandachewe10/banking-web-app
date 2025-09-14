@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BranchManagerReviewResource\Pages;
 use App\Filament\Resources\BranchManagerReviewResource\RelationManagers;
 use App\Models\Loans as BranchManagerReview;
+use App\Policies\BranchManagerReviewPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class BranchManagerReviewResource extends Resource
 {
     protected static ?string $model = BranchManagerReview::class;
-
+    protected static ?string $policy = BranchManagerReviewPolicy::class;
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationLabel = 'Branch Manager Evaluation';

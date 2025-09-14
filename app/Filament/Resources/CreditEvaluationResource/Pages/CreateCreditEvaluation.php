@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\LoansResource\Pages;
+namespace App\Filament\Resources\CreditEvaluationResource\Pages;
 
-use App\Filament\Resources\LoansResource;
+use App\Filament\Resources\CreditEvaluationResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
 
-class CreateLoans extends CreateRecord
+class CreateCreditEvaluation extends CreateRecord
 {
-    protected static string $resource = LoansResource::class;
+    protected static string $resource = CreditEvaluationResource::class;
 
 
 

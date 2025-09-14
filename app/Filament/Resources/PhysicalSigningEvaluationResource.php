@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AgentsResource\Pages;
-use App\Filament\Resources\AgentsResource\RelationManagers;
-use App\Models\Loans as Agents;
+use App\Filament\Resources\PhysicalSigningEvaluationResource\Pages;
+use App\Filament\Resources\PhysicalSigningEvaluationResource\RelationManagers;
+use App\Models\PhysicalSigningEvaluation as Agents;
+use App\Policies\PhysicalSigningEvaluationPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,10 +18,11 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\Hidden;
 
 
-class AgentsResource extends Resource
+
+class PhysicalSigningEvaluationResource extends Resource
 {
     protected static ?string $model = Agents::class;
-
+    protected static ?string $policy = PhysicalSigningEvaluationPolicy::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Physical signing verification';
     protected static ?string $modelLabel = 'Physical signing verification';
@@ -82,7 +84,7 @@ class AgentsResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? 'Approved' : 'Pending')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -116,10 +118,10 @@ class AgentsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAgents::route('/'),
-            'create' => Pages\CreateAgents::route('/create'),
-            'view' => Pages\ViewAgents::route('/{record}'),
-            'edit' => Pages\EditAgents::route('/{record}/edit'),
+            'index' => Pages\ListPhysicalSigningEvaluations::route('/'),
+            'create' => Pages\CreatePhysicalSigningEvaluation::route('/create'),
+            'view' => Pages\ViewPhysicalSigningEvaluation::route('/{record}'),
+            'edit' => Pages\EditPhysicalSigningEvaluation::route('/{record}/edit'),
         ];
     }
 }

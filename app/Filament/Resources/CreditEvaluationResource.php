@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LoansResource\Pages;
-use App\Filament\Resources\LoansResource\RelationManagers;
-use App\Models\Loans;
+use App\Filament\Resources\CreditEvaluationResource\Pages;
+use App\Filament\Resources\CreditEvaluationResource\RelationManagers;
+use App\Models\CreditEvaluation as Loans;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LoansResource extends Resource
+class CreditEvaluationResource extends Resource
 {
     protected static ?string $model = Loans::class;
 
@@ -296,10 +296,10 @@ class LoansResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLoans::route('/'),
-            'create' => Pages\CreateLoans::route('/create'),
-            'view' => Pages\ViewLoans::route('/{record}'),
-            'edit' => Pages\EditLoans::route('/{record}/edit'),
+            'index' => Pages\ListCreditEvaluation::route('/'),
+            'create' => Pages\CreateCreditEvaluation::route('/create'),
+            'view' => Pages\ViewCreditEvaluation::route('/{record}'),
+            'edit' => Pages\EditCreditEvaluation::route('/{record}/edit'),
         ];
     }
 }

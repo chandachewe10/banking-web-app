@@ -4,7 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\HeadCreditReviewResource\Pages;
 use App\Filament\Resources\HeadCreditReviewResource\RelationManagers;
-use App\Models\Loans as HeadCreditReview;
+use App\Models\HeadCreditEvaluation as HeadCreditReview;
+use App\Policies\HeadCreditReviewPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class HeadCreditReviewResource extends Resource
 {
     protected static ?string $model = HeadCreditReview::class;
+    protected static ?string $policy = HeadCreditReviewPolicy::class;
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationLabel = 'Head Credit Evaluation';

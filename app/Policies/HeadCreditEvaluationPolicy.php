@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Loans;
+use App\Models\HeadCreditEvaluation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class LoansPolicy
+class HeadCreditEvaluationPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class LoansPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_branch::manager::review');
+        return $user->can('view_any_head::credit::review');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Loans $loans): bool
+    public function view(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('view_branch::manager::review');
+        return $user->can('view_head::credit::review');
     }
 
     /**
@@ -31,23 +31,23 @@ class LoansPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_branch::manager::review');
+        return $user->can('create_head::credit::review');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Loans $loans): bool
+    public function update(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('update_branch::manager::review');
+        return $user->can('update_head::credit::review');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Loans $loans): bool
+    public function delete(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('delete_branch::manager::review');
+        return $user->can('delete_head::credit::review');
     }
 
     /**
@@ -55,15 +55,15 @@ class LoansPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_branch::manager::review');
+        return $user->can('delete_any_head::credit::review');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Loans $loans): bool
+    public function forceDelete(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('force_delete_branch::manager::review');
+        return $user->can('force_delete_head::credit::review');
     }
 
     /**
@@ -71,15 +71,15 @@ class LoansPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_branch::manager::review');
+        return $user->can('force_delete_any_head::credit::review');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Loans $loans): bool
+    public function restore(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('restore_branch::manager::review');
+        return $user->can('restore_head::credit::review');
     }
 
     /**
@@ -87,15 +87,15 @@ class LoansPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_branch::manager::review');
+        return $user->can('restore_any_head::credit::review');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Loans $loans): bool
+    public function replicate(User $user, HeadCreditEvaluation $headCreditEvaluation): bool
     {
-        return $user->can('replicate_branch::manager::review');
+        return $user->can('replicate_head::credit::review');
     }
 
     /**
@@ -103,6 +103,6 @@ class LoansPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_branch::manager::review');
+        return $user->can('reorder_head::credit::review');
     }
 }

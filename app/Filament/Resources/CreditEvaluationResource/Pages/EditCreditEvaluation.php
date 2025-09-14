@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\LoansResource\Pages;
+namespace App\Filament\Resources\CreditEvaluationResource\Pages;
 use Illuminate\Database\Eloquent\Model;
-use App\Filament\Resources\LoansResource;
+use App\Filament\Resources\CreditEvaluationResource;
 use Filament\Notifications\Notification;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditLoans extends EditRecord
+class EditCreditEvaluation extends EditRecord
 {
-    protected static string $resource = LoansResource::class;
+    protected static string $resource = CreditEvaluationResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -43,7 +43,7 @@ class EditLoans extends EditRecord
 
 
 
-        
+
         return $record;
     }
 

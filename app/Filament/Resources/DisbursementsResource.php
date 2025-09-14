@@ -4,7 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DisbursementsResource\Pages;
 use App\Filament\Resources\DisbursementsResource\RelationManagers;
-use App\Models\Loans as Disbursements;
+use App\Models\Disbursements;
+use App\Policies\DisbursementsPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,7 @@ use App\helpers\CreateLinks;
 class DisbursementsResource extends Resource
 {
     protected static ?string $model = Disbursements::class;
+    protected static ?string $policy = DisbursementsPolicy::class;
     protected static ?int $sort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Disbursements';

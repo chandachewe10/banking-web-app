@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Filament\Resources\AgentsResource\Pages;
+namespace App\Filament\Resources\PhysicalSigningEvaluationResource\Pages;
 
-use App\Filament\Resources\AgentsResource;
+use App\Filament\Resources\PhysicalSigningEvaluationResource;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
-use App\Models\Loans;
+use App\Models\PhysicalSigningEvaluation as Loans;
 use App\Models\User;
 
-class CreateAgents extends CreateRecord
+class CreatePhysicalSigningEvaluation extends CreateRecord
 {
-    protected static string $resource = AgentsResource::class;
+    protected static string $resource = PhysicalSigningEvaluationResource::class;
 
 
     protected function handleRecordCreation(array $data): Model
     {
 
-        
+
         $status = $data['physical_verification'];
         $data = Loans::where('loan_number', $data['loan_number'])->first();
 
-        
+
 
         User::where('case_number', $data->case_number)
-        ->update(['case_number' => null]); 
+        ->update(['case_number' => null]);
         if (!$data) {
             Notification::make()
                 ->title('Invalid Loan Number')
@@ -35,9 +35,9 @@ class CreateAgents extends CreateRecord
                  $this->halt();
         }
 
-       
+
         if ($status === 'Loan has been approved') {
-         
+
             $data->update([
                 'physical_verification' => 1
             ]);
