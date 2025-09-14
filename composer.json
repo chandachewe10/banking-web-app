@@ -7,7 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "bezhansalleh/filament-shield": "*",
+        "bezhansalleh/filament-shield": "^3.1",
         "filament/filament": "^3.3",
         "filament/spatie-laravel-media-library-plugin": "^3.3",
         "haruncpi/laravel-id-generator": "^1.1",

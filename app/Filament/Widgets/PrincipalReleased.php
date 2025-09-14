@@ -8,6 +8,8 @@ use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
+
 use Illuminate\Database\Eloquent\Builder;
 
 
@@ -15,12 +17,12 @@ use Illuminate\Database\Eloquent\Builder;
 class PrincipalReleased extends LineChartWidget
 {
     use InteractsWithPageFilters;
- 
-   
+    use HasWidgetShield;
+
     protected static ?string $maxHeight = '200px';
     protected static ?int $sort = 2;
 
-   
+
 
 
 
@@ -34,17 +36,17 @@ class PrincipalReleased extends LineChartWidget
         $startDate = $this->filters['startDate'] ?? null;
         $endDate = $this->filters['endDate'] ?? null;
         $records = [];
-        
+
         for ($month = 1; $month <= 12; $month++) {
             $records[] = Loans::query()
-            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-            // ->where('loan_status', 'approved')
+                ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+                ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+                // ->where('loan_status', 'approved')
 
-            ->whereMonth('created_at', $month)
-            ->sum('principal_amount');
+                ->whereMonth('created_at', $month)
+                ->sum('principal_amount');
         }
-        
+
         return [
             'datasets' => [
                 [
@@ -54,9 +56,5 @@ class PrincipalReleased extends LineChartWidget
             ],
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
-        
-
-
     }
-
 }

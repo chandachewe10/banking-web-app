@@ -10,6 +10,8 @@ use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Carbon\CarbonImmutable;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
+
 use Illuminate\Database\Eloquent\Builder;
 
 
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class StatsOverview extends BaseWidget
 {
     use InteractsWithPageFilters;
+    use HasWidgetShield;
 
     protected static ?string $maxHeight = '100px';
     protected static ?int $sort = 1;
@@ -47,7 +50,7 @@ class StatsOverview extends BaseWidget
                 ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
                 ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
                 ->where('loan_status', 'processing')
-                ->count(), )
+                ->count(),)
                 ->description('Pending Loans')
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('primary')
@@ -56,7 +59,7 @@ class StatsOverview extends BaseWidget
                 ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
                 ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
                 ->where('loan_status', 'defaulted')
-                ->count(), )
+                ->count(),)
                 ->description('Defaulted Loans')
                 ->descriptionIcon('heroicon-o-clipboard')
                 ->color('danger')
