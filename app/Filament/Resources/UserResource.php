@@ -30,8 +30,8 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-       
-    
+
+
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -55,7 +55,7 @@ class UserResource extends Resource
                     ->multiple()
                     ->preload()
                     ->searchable(),
-                
+
 
 
 
@@ -64,7 +64,11 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+         return $table
+            ->query(function () {
+                return static::getModel()::query()
+                    ->where('is_verified', "=", 0);
+            })
             ->columns([
                  Tables\Columns\TextColumn::make('name')
                     ->label('Full Name')
