@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BranchManagerReviewResource\Pages;
 use App\Filament\Resources\BranchManagerReviewResource\RelationManagers;
-use App\Models\Loans as BranchManagerReview;
+use App\Models\BranchManagerEvaluation as BranchManagerReview;
 use App\Policies\BranchManagerReviewPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;

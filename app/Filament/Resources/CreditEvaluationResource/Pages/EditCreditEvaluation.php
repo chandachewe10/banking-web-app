@@ -61,6 +61,10 @@ class EditCreditEvaluation extends EditRecord
                 'loan_agreement_file_path' => $record->loan_agreement_file_path
             ]
         );
+
+        $user = \App\Models\User::find(auth()->user()->id);
+        $user->case_number = NULL;
+        $user->save();
         return $record;
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Borrower;
 use App\Models\CreditEvaluation as Loans;
+use App\Models\CreditEvaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -51,7 +52,7 @@ class LoanDetailsController extends Controller
 
 
     $borrower = Borrower::where('email', $request->email)->first();
-    $loan = Loans::create([
+    $loan = CreditEvaluation::create([
         'borrower_id' => $borrower->id,
         'loan_type_id' => 1,
         'loan_status' => 'processing',

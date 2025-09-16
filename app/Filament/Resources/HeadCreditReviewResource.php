@@ -26,7 +26,10 @@ class HeadCreditReviewResource extends Resource
     protected static ?string $title = 'Head Credit Evaluation';
     protected static ?string $navigationGroup = 'Credit Module';
 
-
+ public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DisbursementsResource\Pages;
 use App\Filament\Resources\DisbursementsResource\RelationManagers;
-use App\Models\Disbursements;
+use App\Models\Loans as Disbursements;
 use App\Policies\DisbursementsPolicy;
 use Filament\Forms;
 use Filament\Forms\Form;

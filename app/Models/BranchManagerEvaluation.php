@@ -44,7 +44,26 @@ class BranchManagerEvaluation extends Model
         'physical_verification',
         'loan_agreement_file_path'
 
+];
+
+ public function loan_type()
+    {
+
+        return $this->belongsTo(LoanType::class, 'loan_type_id', 'id');
+    }
+
+    public function borrower()
+    {
+
+        return $this->belongsTo(Borrower::class, 'borrower_id', 'id');
+    }
 
 
-    ];
+    public function verifiedBy()
+    {
+
+        return $this->belongsTo(User::class, 'verified_by', 'id');
+    }
+
+
 }

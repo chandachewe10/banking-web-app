@@ -4,6 +4,7 @@ namespace App\Filament\Resources\DisbursementsResource\Pages;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\DisbursementsResource;
+use App\Models\PhysicalSigningEvaluation;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
@@ -38,6 +39,44 @@ class EditDisbursements extends EditRecord
         $data['loan_number'] = IdGenerator::generate(['table' => 'loans', 'length' => 8, 'prefix' => date('Y')]);
         $record->update($data);
 
+        PhysicalSigningEvaluation::create(
+
+            [
+                'borrower_id' => $record->borrower_id,
+                'loan_type_id' => $record->loan_type_id,
+                'loan_status' => $record->loan_status,
+                'loan_release_date' => $record->loan_release_date,
+                'principal_amount' => $record->principal_amount,
+                'loan_purpose' => $record->loan_purpose,
+                'interest_rate' => $record->interest_rate,
+                'interest_amount' => $record->interest_amount,
+                'processing_fee' => $record->processing_fee,
+                'arrangement_fee' => $record->arrangement_fee,
+                'insurance_fee' => $record->insurance_fee,
+                'total_repayment' => $record->total_repayment,
+                'case_number' => $record->case_number,
+                'loan_duration' => $record->loan_duration,
+                'duration_period' => $record->duration_period,
+                'email' => $record->email,
+                'crb_scoring' => $record->crb_scoring,
+                'employer_verification' => $record->employer_verification,
+                'due_diligence' => $record->due_diligence,
+                'comments' => $record->comments,
+                'credit_appraisal_report' => $record->credit_appraisal_report,
+                'verified_by' => auth()->user()->id,
+                'is_approved_on_step_one' => $record->is_approved_on_step_one,
+                'is_approved_on_step_two' => $record->is_approved_on_step_two,
+                'is_approved_on_step_three' => $record->is_approved_on_step_three,
+                'is_approved_on_step_four' => $record->is_approved_on_step_four,
+                'loan_number' => $record->loan_number,
+                'physical_verification' => $record->physical_verification,
+                'loan_agreement_file_path' => $record->loan_agreement_file_path
+            ]
+        );
+
+
+
+
         //Check if they have the Loan Agreement Form template for this type of loan
         $loan_agreement_text = \App\Models\LoanAgreementForms::where('loan_type_id', "=", 1)->first();
         if (!$loan_agreement_text) {
@@ -56,8 +95,8 @@ class EditDisbursements extends EditRecord
             $this->halt();
         } else {
 
-            $loanDetails = \App\Models\Loans::where('loan_number',"=",$data['loan_number'])->first();
-            
+            $loanDetails = \App\Models\Loans::where('loan_number', "=", $data['loan_number'])->first();
+
             $loan_duration = $loanDetails->loan_duration;
             $loan_release_date = $loanDetails->loan_release_date;
             $loan_date = $loan_release_date;
@@ -171,7 +210,7 @@ class EditDisbursements extends EditRecord
 
 
 
-            $this->sendSms($message,$borrower_phone);
+            $this->sendSms($message, $borrower_phone);
 
 
             $message = 'Hi ' . $borrower->first_name . ', ';
@@ -209,12 +248,12 @@ class EditDisbursements extends EditRecord
                     break;
             }
 
-           // $borrower->notify(new LoanStatusNotification($message));
+            // $borrower->notify(new LoanStatusNotification($message));
 
 
 
 
-           $record->update($data);
+            $record->update($data);
 
             return $record;
         }

@@ -15,7 +15,7 @@ class LoansPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_branch::manager::review');
+        return $user->can('view_any_disbursements');
     }
 
     /**
@@ -23,7 +23,7 @@ class LoansPolicy
      */
     public function view(User $user, Loans $loans): bool
     {
-        return $user->can('view_branch::manager::review');
+        return $user->can('view_disbursements');
     }
 
     /**
@@ -31,7 +31,7 @@ class LoansPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_branch::manager::review');
+        return $user->can('create_disbursements');
     }
 
     /**
@@ -39,7 +39,7 @@ class LoansPolicy
      */
     public function update(User $user, Loans $loans): bool
     {
-        return $user->can('update_branch::manager::review');
+        return $user->can('update_disbursements');
     }
 
     /**
@@ -47,7 +47,7 @@ class LoansPolicy
      */
     public function delete(User $user, Loans $loans): bool
     {
-        return $user->can('delete_branch::manager::review');
+        return $user->can('delete_disbursements');
     }
 
     /**
@@ -55,7 +55,7 @@ class LoansPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_branch::manager::review');
+        return $user->can('delete_any_disbursements');
     }
 
     /**
@@ -63,7 +63,7 @@ class LoansPolicy
      */
     public function forceDelete(User $user, Loans $loans): bool
     {
-        return $user->can('force_delete_branch::manager::review');
+        return $user->can('force_delete_disbursements');
     }
 
     /**
@@ -71,7 +71,7 @@ class LoansPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_branch::manager::review');
+        return $user->can('force_delete_any_disbursements');
     }
 
     /**
@@ -79,7 +79,7 @@ class LoansPolicy
      */
     public function restore(User $user, Loans $loans): bool
     {
-        return $user->can('restore_branch::manager::review');
+        return $user->can('restore_disbursements');
     }
 
     /**
@@ -87,7 +87,7 @@ class LoansPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_branch::manager::review');
+        return $user->can('restore_any_disbursements');
     }
 
     /**
@@ -95,7 +95,7 @@ class LoansPolicy
      */
     public function replicate(User $user, Loans $loans): bool
     {
-        return $user->can('replicate_branch::manager::review');
+        return $user->can('replicate_disbursements');
     }
 
     /**
@@ -103,6 +103,6 @@ class LoansPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_branch::manager::review');
+        return $user->can('reorder_disbursements');
     }
 }
