@@ -63,7 +63,7 @@ class BorrowerResource extends Resource
                                     ->icon('heroicon-o-sparkles'),
                                 TextEntry::make('dob')
                                     ->label('Date of Birth')
-                                    ->date('j F Y')
+                                    //->date('j F Y')
                                     ->icon('heroicon-o-cake'),
                                 TextEntry::make('occupation')
                                     ->icon('heroicon-o-briefcase'),
