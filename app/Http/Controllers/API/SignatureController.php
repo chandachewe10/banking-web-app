@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\CreditEvaluation as Loans;
+use App\Models\Loans;
 use App\Models\Borrower;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SignatureController extends Controller
@@ -34,6 +35,8 @@ class SignatureController extends Controller
      */
     public function store(Request $request)
     {
+
+        Log::info('Signature URI: '.$request->idFront);
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'signatureUri' => 'required|string',
@@ -85,6 +88,7 @@ class SignatureController extends Controller
                 } else {
                     // If no available Credit Officer, assign to any Credit Officer (even if they have a case number)
                     $caseHandler = User::role('Credit Officer')->latest()->first();
+                    $caseHandler->case_number = $caseNumber;
                     $caseHandler->save();
                 }
 

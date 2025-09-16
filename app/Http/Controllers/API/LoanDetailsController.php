@@ -4,8 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Borrower;
-use App\Models\CreditEvaluation as Loans;
 use App\Models\CreditEvaluation;
+use App\Models\Loans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -83,7 +83,7 @@ class LoanDetailsController extends Controller
                 Log::error('Error in store method: '.$e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while processing your request',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ], 500);
         }
