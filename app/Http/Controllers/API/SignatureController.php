@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Loans;
+use App\Models\CreditEvaluation;
 use App\Models\Borrower;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -95,7 +95,7 @@ class SignatureController extends Controller
 
             //Update the CaseNumber into the Loan Number
             $borrower = Borrower::where('email', "=", $request->email)->latest()->first();
-            $loan = Loans::where('borrower_id', "=", $borrower->id)->where('loan_status', "=", 'processing')->first();
+            $loan = CreditEvaluation::where('borrower_id', "=", $borrower->id)->where('loan_status', "=", 'processing')->first();
             $loan->case_number = $caseNumber;
             $loan->save();
 
