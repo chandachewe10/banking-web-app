@@ -15,6 +15,8 @@ Route::get('/user', function (Request $request) {
 Route::resource('register', RegistrationController::class)->only(['index', 'store', 'update', 'destroy']);
 Route::post('/verifyOtp', [RegistrationController::class, 'verifyOtp'])
 ->middleware('auth:sanctum');
+Route::post('/resendOtp', [RegistrationController::class, 'resendOtp'])
+->middleware('auth:sanctum');
 Route::resource('personalDetails', PersonalDetailsController::class)->only(['index', 'store', 'update', 'destroy'])
 ->middleware('auth:sanctum');
 Route::post('documents',[DocumentController::class,'uploadDocuments'])

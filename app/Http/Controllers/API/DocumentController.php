@@ -23,7 +23,9 @@ class DocumentController extends Controller
             'idBack' => 'required|string',
             'selfie' => 'required|string',
             'bankStatement' => 'required|string',
-            'payslip' => 'required|string',
+            'payslip1' => 'required|string',
+            'payslip2' => 'required|string',
+            'payslip3' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -64,8 +66,16 @@ class DocumentController extends Controller
                 $uploadedFiles['bank_statement'] = $this->processBase64File($request->bankStatement, 'bank_statement', $user->id, ['jpeg', 'png', 'pdf']);
             }
 
-            if ($request->has('payslip')) {
-                $uploadedFiles['payslip'] = $this->processBase64File($request->payslip, 'payslip', $user->id, ['jpeg', 'png', 'pdf']);
+            if ($request->has('payslip1')) {
+                $uploadedFiles['payslip1'] = $this->processBase64File($request->payslip1, 'payslip1', $user->id, ['pdf']);
+            }
+
+            if ($request->has('payslip2')) {
+                $uploadedFiles['payslip2'] = $this->processBase64File($request->payslip2, 'payslip2', $user->id, ['pdf']);
+            }
+
+            if ($request->has('payslip3')) {
+                $uploadedFiles['payslip3'] = $this->processBase64File($request->payslip3, 'payslip3', $user->id, ['pdf']);
             }
 
             // Add media to user document

@@ -227,10 +227,10 @@ class BorrowerResource extends Resource
 
                         Actions::make(
                             array_merge(
-                                ...$borrower->getMedia('payslip')->map(function ($media) {
+                                ...$borrower->getMedia('payslip1')->map(function ($media) {
                                     return [
                                         Action::make('download_' . $media->id)
-                                            ->label('Download Payslip')
+                                            ->label('Download Payslip 1')
                                             ->icon('heroicon-o-arrow-down-tray')
                                             ->url($media->getUrl())
                                             ->openUrlInNewTab()
@@ -238,7 +238,53 @@ class BorrowerResource extends Resource
                                             ->color('primary'),
 
                                         Action::make('view_' . $media->id)
-                                            ->label('View Payslips')
+                                            ->label('View Payslip 1')
+                                            ->icon('heroicon-o-eye')
+                                            ->url($media->getUrl())
+                                            ->openUrlInNewTab()
+                                            ->outlined()
+                                            ->color('secondary'),
+                                    ];
+                                })->toArray()
+                            )
+                        ),
+                        Actions::make(
+                            array_merge(
+                                ...$borrower->getMedia('payslip2')->map(function ($media) {
+                                    return [
+                                        Action::make('download_' . $media->id)
+                                            ->label('Download Payslip 2')
+                                            ->icon('heroicon-o-arrow-down-tray')
+                                            ->url($media->getUrl())
+                                            ->openUrlInNewTab()
+                                            ->outlined()
+                                            ->color('primary'),
+
+                                        Action::make('view_' . $media->id)
+                                            ->label('View Payslip 2')
+                                            ->icon('heroicon-o-eye')
+                                            ->url($media->getUrl())
+                                            ->openUrlInNewTab()
+                                            ->outlined()
+                                            ->color('secondary'),
+                                    ];
+                                })->toArray()
+                            )
+                        ),
+                        Actions::make(
+                            array_merge(
+                                ...$borrower->getMedia('payslip3')->map(function ($media) {
+                                    return [
+                                        Action::make('download_' . $media->id)
+                                            ->label('Download Payslip 3')
+                                            ->icon('heroicon-o-arrow-down-tray')
+                                            ->url($media->getUrl())
+                                            ->openUrlInNewTab()
+                                            ->outlined()
+                                            ->color('primary'),
+
+                                        Action::make('view_' . $media->id)
+                                            ->label('View Payslip 3')
                                             ->icon('heroicon-o-eye')
                                             ->url($media->getUrl())
                                             ->openUrlInNewTab()

@@ -186,4 +186,44 @@ public function verifyOtp(Request $request)
 
     }
 }
+
+public function resendOtp(Request $request)
+{
+    try {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        // Generate new OTP
+        $otpCode = rand(100000, 999999);
+        $user->otp_code = $otpCode;
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        // Send notifications
+        $user->notify(new OtpNotification($otpCode));
+        $this->sendOtpSms($user->phone, $otpCode);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP resent successfully',
+        ], 200);
+    } catch (\Exception $e) {
+        Log::error('Error in resendOtp method: '.$e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred while processing your request',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
 }
