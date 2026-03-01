@@ -24,20 +24,20 @@ class Loans extends Model implements HasMedia
     public function loan_type()
     {
 
-        return $this->belongsTo(LoanType::class, 'loan_type_id', 'id');
+        return $this->belongsTo(LoanType::class , 'loan_type_id', 'id');
     }
 
     public function borrower()
     {
 
-        return $this->belongsTo(Borrower::class, 'borrower_id', 'id');
+        return $this->belongsTo(Borrower::class , 'borrower_id', 'id');
     }
 
 
     public function verifiedBy()
     {
 
-        return $this->belongsTo(User::class, 'verified_by', 'id');
+        return $this->belongsTo(User::class , 'verified_by', 'id');
     }
 
 
@@ -75,7 +75,15 @@ class Loans extends Model implements HasMedia
         'is_approved_on_step_four',
         'loan_number',
         'physical_verification',
-        'loan_agreement_file_path'
+        'loan_agreement_file_path',
+        'credit_life_fee',
+        'insurance_levy',
+        'credit_reference_fee',
+        'collateral_fee',
+        'documentation_fee',
+        'admin_fee_per_month',
+        'monthly_repayment',
+        'disbursed_amount',
 
 
 

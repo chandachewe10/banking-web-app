@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class CreditEvaluation extends Model
+class CreditEvaluation extends Model implements HasMedia
 {
 
-
+    use InteractsWithMedia;
 
     public function loan_type()
     {
