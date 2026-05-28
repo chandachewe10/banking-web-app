@@ -23,6 +23,8 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 
 class BorrowerResource extends Resource
 {
@@ -506,5 +508,38 @@ class BorrowerResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    /**
+     * Borrower name column that links to the borrower detail (view) page.
+     */
+    public static function linkedBorrowerNameColumn(): TextColumn
+    {
+        return TextColumn::make('borrower.first_name')
+            ->label('Borrower')
+            ->formatStateUsing(fn ($state, Model $record): string => static::formatBorrowerName($record))
+            ->url(fn (Model $record): ?string => $record->borrower_id
+                ? static::getUrl('view', ['record' => $record->borrower_id])
+                : null)
+            ->color('primary')
+            ->sortable()
+            ->searchable(query: function (Builder $query, string $search): Builder {
+                return $query->whereHas('borrower', function (Builder $borrowerQuery) use ($search): void {
+                    $borrowerQuery
+                        ->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            });
+    }
+
+    public static function formatBorrowerName(Model $record): string
+    {
+        $borrower = $record->borrower;
+
+        if (! $borrower) {
+            return '—';
+        }
+
+        return trim("{$borrower->first_name} {$borrower->last_name}");
     }
 }

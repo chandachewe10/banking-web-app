@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PhysicalSigningEvaluation extends Model
 {
+    public function borrower(): BelongsTo
+    {
+        return $this->belongsTo(Borrower::class, 'borrower_id', 'id');
+    }
+
      /**
      * The attributes that are mass assignable.
      *

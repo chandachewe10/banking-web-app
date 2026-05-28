@@ -38,6 +38,8 @@ class Borrower extends Model implements HasMedia
         'mobile',
         'email',
         'address',
+        'latitude',
+        'longitude',
         'city',
         'province',
         'country',
@@ -56,6 +58,7 @@ class Borrower extends Model implements HasMedia
         'bank_sort_code',
         'bank_account_number',
         'bank_account_name',
-        'case_number'
+        'bank_account_type',
+        'case_number',
     ];
 }

@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CreditEvaluationResource\Pages;
 use App\Models\CreditEvaluation as Loans;
+use App\Services\LoanCalculator;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -58,14 +61,17 @@ class CreditEvaluationResource extends Resource
                             ->required(),
 
                         Forms\Components\TextInput::make('loan_duration')
+                            ->label('Loan Duration')
+                            ->numeric()
+                            ->minValue(1)
                             ->required()
-                            ->required()
-                            ->suffix('Months'),
+                            ->suffix('Months')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
 
                         Forms\Components\TextInput::make('duration_period')
-                            ->required()
                             ->disabled()
-                            ->suffix('Months'),
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('transaction_reference')
                             ->disabled()
@@ -83,44 +89,48 @@ class CreditEvaluationResource extends Resource
                         Forms\Components\TextInput::make('principal_amount')
                             ->label('Total Loan Amount (K)')
                             ->required()
-                            ->required()
                             ->numeric()
-                            ->prefix('K'),
+                            ->minValue(1)
+                            ->prefix('K')
+                            ->helperText('Tab out of this field (or change duration) to recalculate fees and disbursement.')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
 
                         Forms\Components\TextInput::make('disbursed_amount')
                             ->label('Disbursed Amount (K)')
-                            ->required()
                             ->numeric()
                             ->prefix('K')
-                            ->default(null),
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('interest_rate')
                             ->label('Interest Rate (% p.a.)')
                             ->numeric()
                             ->required()
                             ->suffix('%')
-                            ->default(null),
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
 
                         Forms\Components\TextInput::make('interest_amount')
                             ->label('Total Interest Amount (K)')
                             ->numeric()
-                            ->required()
                             ->prefix('K')
-                            ->default(null),
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('monthly_repayment')
                             ->label('Monthly Repayment (K)')
                             ->numeric()
-                            ->required()
                             ->prefix('K')
-                            ->default(null),
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('total_repayment')
                             ->label('Total Repayable (K)')
                             ->numeric()
-                            ->required()
                             ->prefix('K')
-                            ->default(null),
+                            ->disabled()
+                            ->dehydrated(),
                     ]),
 
                 // ── Upfront Deduction Fees ────────────────────────────────
@@ -131,57 +141,58 @@ class CreditEvaluationResource extends Resource
                             ->label('Arrangement Fee (K) — 4%')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('processing_fee')
                             ->label('Processing Fee (K) — 2.5%')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('credit_life_fee')
                             ->label('Credit Life Insurance (K) — 4.5%')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('insurance_levy')
                             ->label('Insurance Levy (K) — Fixed K150')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('credit_reference_fee')
                             ->label('Credit Reference Bureau Fee (K) — Fixed K50')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('collateral_fee')
                             ->label('Collateral Appraisal Fee (K) — 1%')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('documentation_fee')
                             ->label('Documentation Fee (K) — 0.5%')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
 
                         Forms\Components\TextInput::make('admin_fee_per_month')
                             ->label('Admin Fee / Month (K) — 0.5%')
+                            ->helperText('Total admin fees (× loan months) are deducted from the disbursed amount.')
                             ->numeric()
                             ->disabled()
-                            ->prefix('K')
-                            ->default(null),
+                            ->dehydrated()
+                            ->prefix('K'),
                     ]),
 
                 // ── Official Use ──────────────────────────────────────────
@@ -305,10 +316,7 @@ class CreditEvaluationResource extends Resource
                     ->where('case_number', auth()->user()->case_number);
             })
             ->columns([
-                Tables\Columns\TextColumn::make('borrower.first_name')
-                    ->label('Borrower')
-                    ->sortable()
-                    ->searchable(),
+                BorrowerResource::linkedBorrowerNameColumn(),
 
                 Tables\Columns\TextColumn::make('loan_status')
                     ->badge()
@@ -476,5 +484,25 @@ class CreditEvaluationResource extends Resource
             'view'   => Pages\ViewCreditEvaluation::route('/{record}'),
             'edit'   => Pages\EditCreditEvaluation::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Recalculate dependent loan fields when amount, duration, or rate changes.
+     */
+    public static function syncCalculatedLoanFields(Get $get, Set $set): void
+    {
+        $calculated = LoanCalculator::calculate([
+            'principal_amount' => $get('principal_amount'),
+            'loan_duration'    => $get('loan_duration'),
+            'interest_rate'    => $get('interest_rate'),
+        ]);
+
+        foreach ($calculated as $field => $value) {
+            if (in_array($field, ['principal_amount', 'loan_duration'], true)) {
+                continue;
+            }
+
+            $set($field, $value);
+        }
     }
 }

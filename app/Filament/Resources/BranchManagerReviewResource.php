@@ -205,9 +205,7 @@ class BranchManagerReviewResource extends Resource
         return $table
 
             ->columns([
-                Tables\Columns\TextColumn::make('borrower.first_name')
-                    ->numeric()
-                    ->sortable(),
+                BorrowerResource::linkedBorrowerNameColumn(),
 
                 Tables\Columns\TextColumn::make('loan_status')
                     ->badge()

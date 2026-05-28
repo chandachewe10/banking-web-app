@@ -74,6 +74,7 @@ class PhysicalSigningEvaluationResource extends Resource
     {
         return $table
             ->columns([
+                BorrowerResource::linkedBorrowerNameColumn(),
                 Tables\Columns\TextColumn::make('loan_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('physical_verification')

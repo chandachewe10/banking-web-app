@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CreditEvaluationResource\Pages;
 use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\CreditEvaluationResource;
 use App\Models\HeadCreditEvaluation;
+use App\Services\LoanCalculator;
 use Filament\Notifications\Notification;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -19,6 +20,11 @@ class EditCreditEvaluation extends EditRecord
             Actions\ViewAction::make(),
             // Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return array_merge($data, LoanCalculator::calculate($data));
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model

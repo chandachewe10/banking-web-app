@@ -47,6 +47,14 @@ class CreditEvaluation extends Model implements HasMedia
         'processing_fee',
         'arrangement_fee',
         'insurance_fee',
+        'credit_life_fee',
+        'insurance_levy',
+        'credit_reference_fee',
+        'collateral_fee',
+        'documentation_fee',
+        'admin_fee_per_month',
+        'monthly_repayment',
+        'disbursed_amount',
         'total_repayment',
         'case_number',
         'loan_duration',
@@ -64,9 +72,6 @@ class CreditEvaluation extends Model implements HasMedia
         'is_approved_on_step_four',
         'loan_number',
         'physical_verification',
-        'loan_agreement_file_path'
-
-
-
+        'loan_agreement_file_path',
     ];
 }
