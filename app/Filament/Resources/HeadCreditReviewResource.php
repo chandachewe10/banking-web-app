@@ -116,21 +116,12 @@ class HeadCreditReviewResource extends Resource
                                 'D' => 'D',
 
                             ]),
-                        Forms\Components\Select::make('employer_verification')
-                            ->label('Employer Verification')
-                            ->prefixIcon('heroicon-o-credit-card')
-                            ->required()
-                            ->disabled()
-                            ->options([
-                                'Valid Employee' => 'Valid Employee',
-                                'Former Employee' => 'Former Employee',
-                                'Imposter' => 'Imposter',
-
-                            ]),
+                        CreditEvaluationResource::employerVerificationSelectField(),
 
                         Forms\Components\RichEditor::make('due_diligence')
                             ->label('Due Diligence Report')
                             ->required()
+                            ->formatStateUsing(fn ($state) => CreditEvaluationResource::normalizeRichEditorState($state))
                             ->disabled()
                             ->disableToolbarButtons([
                                 'attachFiles',
@@ -211,6 +202,10 @@ class HeadCreditReviewResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loan_duration')
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('employer_verification')
+                    ->label('Employer Verification')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('is_approved_on_step_one')
                     ->label('Credit Officer Approval')

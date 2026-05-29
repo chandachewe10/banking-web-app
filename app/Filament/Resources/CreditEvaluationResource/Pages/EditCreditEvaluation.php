@@ -31,6 +31,7 @@ class EditCreditEvaluation extends EditRecord
     {
         $data['verified_by'] = auth()->user()->id;
         $record->update($data);
+        $record->refresh();
 
         // Add Data to the second step
         HeadCreditEvaluation::create(
@@ -52,11 +53,11 @@ class EditCreditEvaluation extends EditRecord
                 'loan_duration' => $record->loan_duration,
                 'duration_period' => $record->duration_period,
                 'email' => $record->email,
-                'crb_scoring' => $record->crb_scoring,
-                'employer_verification' => $record->employer_verification,
-                'due_diligence' => $record->due_diligence,
-                'comments' => $record->comments,
-                'credit_appraisal_report' => $record->credit_appraisal_report,
+                'crb_scoring' => $data['crb_scoring'] ?? $record->crb_scoring,
+                'employer_verification' => $data['employer_verification'] ?? $record->employer_verification,
+                'due_diligence' => $data['due_diligence'] ?? $record->due_diligence,
+                'comments' => $data['comments'] ?? $record->comments,
+                'credit_appraisal_report' => $data['credit_appraisal_report'] ?? $record->credit_appraisal_report,
                 'verified_by' => auth()->user()->id,
                 'is_approved_on_step_one' => $record->is_approved_on_step_one,
                 'is_approved_on_step_two' => $record->is_approved_on_step_two,

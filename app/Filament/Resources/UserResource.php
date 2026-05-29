@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -25,7 +23,7 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return (string) static::getModel()::count();
     }
 
     public static function form(Form $form): Form
@@ -65,23 +63,25 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
          return $table
-            ->query(function () {
-                return static::getModel()::query()
-                    ->where('is_verified', "=", 0);
-            })
             ->columns([
                  Tables\Columns\TextColumn::make('name')
                     ->label('Full Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_verified')
+                    ->label('Verified')
+                    ->boolean(),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_verified')
+                    ->label('Account verified')
+                    ->placeholder('All users')
+                    ->trueLabel('Verified only')
+                    ->falseLabel('Pending verification only'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

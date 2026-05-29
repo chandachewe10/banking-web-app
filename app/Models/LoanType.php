@@ -23,6 +23,19 @@ class LoanType extends Model
      */
     protected $fillable = [
         'loan_name',
-
     ];
+
+    /**
+     * Ensure a valid loan_types.id exists (evaluations often reference id 1 from mobile API).
+     */
+    public static function resolveId(?int $loanTypeId = null, ?string $loanPurpose = null): int
+    {
+        if ($loanTypeId && static::query()->whereKey($loanTypeId)->exists()) {
+            return $loanTypeId;
+        }
+
+        $name = $loanPurpose ? trim($loanPurpose) : 'General Loan';
+
+        return (int) static::firstOrCreate(['loan_name' => $name])->id;
+    }
 }

@@ -66,6 +66,7 @@ class CreditEvaluationResource extends Resource
                             ->minValue(1)
                             ->required()
                             ->suffix('Months')
+                            ->helperText('Click outside this box to update fees, repayments, and disbursement.')
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
 
@@ -84,6 +85,7 @@ class CreditEvaluationResource extends Resource
 
                 // ── Loan Amounts ──────────────────────────────────────────
                 Forms\Components\Section::make('Loan Amounts')
+                    ->description('Change loan amount or duration below, then click outside the field to refresh all calculated values.')
                     ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('principal_amount')
@@ -92,7 +94,7 @@ class CreditEvaluationResource extends Resource
                             ->numeric()
                             ->minValue(1)
                             ->prefix('K')
-                            ->helperText('Tab out of this field (or change duration) to recalculate fees and disbursement.')
+                            ->helperText('Click outside this box to update fees, repayments, and disbursement.')
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
 
@@ -106,10 +108,9 @@ class CreditEvaluationResource extends Resource
                         Forms\Components\TextInput::make('interest_rate')
                             ->label('Interest Rate (% p.a.)')
                             ->numeric()
-                            ->required()
                             ->suffix('%')
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Get $get, Set $set) => self::syncCalculatedLoanFields($get, $set)),
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('interest_amount')
                             ->label('Total Interest Amount (K)')
@@ -188,7 +189,6 @@ class CreditEvaluationResource extends Resource
 
                         Forms\Components\TextInput::make('admin_fee_per_month')
                             ->label('Admin Fee / Month (K) — 0.5%')
-                            ->helperText('Total admin fees (× loan months) are deducted from the disbursed amount.')
                             ->numeric()
                             ->disabled()
                             ->dehydrated()
@@ -214,15 +214,12 @@ class CreditEvaluationResource extends Resource
                             ->label('Employer Verification')
                             ->prefixIcon('heroicon-o-credit-card')
                             ->required()
-                            ->options([
-                                'Valid Employee'   => 'Valid Employee',
-                                'Former Employee'  => 'Former Employee',
-                                'Imposter'         => 'Imposter',
-                            ]),
+                            ->options(fn (?string $state): array => self::employerVerificationOptions($state)),
 
                         Forms\Components\RichEditor::make('due_diligence')
                             ->label('Due Diligence Report')
                             ->required()
+                            ->formatStateUsing(fn ($state) => self::normalizeRichEditorState($state))
                             ->disableToolbarButtons(['attachFiles', 'codeBlock'])
                             ->columnSpan(2),
 
@@ -486,6 +483,62 @@ class CreditEvaluationResource extends Resource
         ];
     }
 
+    public static function employerVerificationOptions(?string $currentValue = null): array
+    {
+        $options = [
+            'Valid Employee'  => 'Valid Employee',
+            'Former Employee' => 'Former Employee',
+            'Imposter'        => 'Imposter',
+        ];
+
+        if ($currentValue && ! array_key_exists($currentValue, $options)) {
+            $options[$currentValue] = $currentValue;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Read-only display for downstream evaluation steps (shows any stored value).
+     */
+    public static function employerVerificationDisplayField(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('employer_verification')
+            ->label('Employer Verification')
+            ->prefixIcon('heroicon-o-building-office')
+            ->disabled()
+            ->dehydrated(false);
+    }
+
+    /**
+     * Editable employer verification select (Head Credit can correct or set the value).
+     */
+    public static function employerVerificationSelectField(): Forms\Components\Select
+    {
+        return Forms\Components\Select::make('employer_verification')
+            ->label('Employer Verification')
+            ->prefixIcon('heroicon-o-building-office')
+            ->required()
+            ->searchable()
+            ->options(fn (?string $state): array => self::employerVerificationOptions($state));
+    }
+
+    /**
+     * Rich editor fields were previously stored as booleans (0/1) — show empty instead.
+     */
+    public static function normalizeRichEditorState(mixed $state): ?string
+    {
+        if ($state === null || $state === '' || $state === false) {
+            return null;
+        }
+
+        if (in_array($state, [0, '0', 1, '1', true], true)) {
+            return null;
+        }
+
+        return (string) $state;
+    }
+
     /**
      * Recalculate dependent loan fields when amount, duration, or rate changes.
      */
@@ -498,7 +551,7 @@ class CreditEvaluationResource extends Resource
         ]);
 
         foreach ($calculated as $field => $value) {
-            if (in_array($field, ['principal_amount', 'loan_duration'], true)) {
+            if (in_array($field, ['principal_amount', 'loan_duration', 'interest_rate'], true)) {
                 continue;
             }
 

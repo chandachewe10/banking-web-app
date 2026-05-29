@@ -31,10 +31,10 @@ class BorrowerResource extends Resource
     protected static ?string $model = Borrower::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Borrower Evaluation';
-    protected static ?string $modelLabel = 'Borrower Evaluation';
-    protected static ?string $recordTitleAttribute = 'Borrower Evaluation';
-    protected static ?string $title = 'Borrower Evaluation';
+    protected static ?string $navigationLabel = 'Borrowers';
+    protected static ?string $modelLabel = 'Borrowers';
+    protected static ?string $recordTitleAttribute = 'Borrowers';
+    protected static ?string $title = 'Borrowers';
     protected static ?string $navigationGroup = 'Credit Module';
     protected static ?int $sort = 1;
 

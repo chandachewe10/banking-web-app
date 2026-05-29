@@ -114,17 +114,7 @@ class DisbursementsResource extends Resource
                                 'D' => 'D',
 
                             ]),
-                        Forms\Components\Select::make('employer_verification')
-                            ->label('Employer Verification')
-                            ->prefixIcon('heroicon-o-credit-card')
-                            ->required()
-                            ->disabled()
-                            ->options([
-                                'Valid Employee' => 'Valid Employee',
-                                'Former Employee' => 'Former Employee',
-                                'Imposter' => 'Imposter',
-
-                            ]),
+                        CreditEvaluationResource::employerVerificationDisplayField(),
 
                         Forms\Components\RichEditor::make('due_diligence')
                             ->label('Due Diligence Report')

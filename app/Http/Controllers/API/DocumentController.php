@@ -18,14 +18,14 @@ class DocumentController extends Controller
         
         Log::info('FRONT ID: '.$request->idFront);
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'idFront' => 'required|string',
-            'idBack' => 'required|string',
-            'selfie' => 'required|string',
+            'email'         => 'required|email',
+            'idFront'       => 'required|string',
+            'idBack'        => 'required|string',
+            'selfie'        => 'required|string',
             'bankStatement' => 'required|string',
-            'payslip1' => 'required|string',
-            'payslip2' => 'required|string',
-            'payslip3' => 'required|string',
+            'payslip1'      => 'required|string',
+            'payslip2'      => 'required|string',
+            'payslip3'      => 'required|string',
         ]);
 
         if ($validator->fails()) {

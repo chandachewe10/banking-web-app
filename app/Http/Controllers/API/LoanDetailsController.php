@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Borrower;
 use App\Models\CreditEvaluation;
+use App\Models\LoanType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -47,10 +48,11 @@ class LoanDetailsController extends Controller
                 'creditReferenceFee' => 'nullable|numeric|min:0',
                 'collateralFee'      => 'nullable|numeric|min:0',
                 'documentationFee'   => 'nullable|numeric|min:0',
-                'adminFeePerMonth'   => 'nullable|numeric|min:0',
-                'monthlyRepayment'   => 'nullable|numeric|min:0',
-                'disbursedAmount'    => 'nullable|numeric|min:0',
-                'totalRepayable'     => 'nullable|numeric|min:0',
+                'adminFeePerMonth'    => 'nullable|numeric|min:0',
+                'monthlyRepayment'    => 'nullable|numeric|min:0',
+                'disbursedAmount'     => 'nullable|numeric|min:0',
+                'totalRepayable'      => 'nullable|numeric|min:0',
+                'disbursementMethod'  => 'nullable|string|in:EFT,Mobile Money',
             ]);
 
             $borrower = Borrower::where('email', $validatedData['email'])->firstOrFail();
@@ -86,7 +88,7 @@ class LoanDetailsController extends Controller
 
             $loan = CreditEvaluation::create([
                 'borrower_id'          => $borrower->id,
-                'loan_type_id'         => 1,
+                'loan_type_id'         => LoanType::resolveId(null, $validatedData['purpose']),
                 'loan_status'          => 'processing',
                 'loan_release_date'    => Carbon::now(),
                 'email'                => $validatedData['email'],
@@ -114,6 +116,7 @@ class LoanDetailsController extends Controller
                 'monthly_repayment'    => $monthlyRepayment,
                 'disbursed_amount'     => $disbursedAmount,
                 'total_repayment'      => $totalRepayable,
+                'disbursement_method'  => $validatedData['disbursementMethod'] ?? null,
 
                 'verified_by'          => null,
             ]);

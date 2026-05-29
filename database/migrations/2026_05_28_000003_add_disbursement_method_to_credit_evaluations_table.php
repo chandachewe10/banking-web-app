@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('credit_evaluations', function (Blueprint $table) {
+            if (! Schema::hasColumn('credit_evaluations', 'disbursement_method')) {
+                $table->string('disbursement_method')->nullable()->after('total_repayment');
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('credit_evaluations', function (Blueprint $table) {
+            $table->dropColumn('disbursement_method');
+        });
+    }
+};

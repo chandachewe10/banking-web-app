@@ -73,5 +73,6 @@ class CreditEvaluation extends Model implements HasMedia
         'loan_number',
         'physical_verification',
         'loan_agreement_file_path',
+        'disbursement_method',
     ];
 }

@@ -52,15 +52,13 @@ class LoanCalculator
         $totalRepayment = self::round($principal + $totalInterest);
         $monthlyRepayment = self::round($totalRepayment / $tenure);
 
-        // Net cash to borrower: principal minus all upfront deductions (admin scales with tenure).
+        // Per specification: only these 5 fees are physically deducted from the cash disbursed.
+        // Collateral, documentation and admin fees are informational charges, not cash deductions.
         $upfrontDeductions = $arrangementFee
             + $processingFee
             + $creditLifeFee
             + $insuranceLevy
-            + $creditReferenceFee
-            + $collateralFee
-            + $documentationFee
-            + $totalAdminFees;
+            + $creditReferenceFee;
 
         $disbursedAmount = self::round(max(0, $principal - $upfrontDeductions));
 
@@ -68,7 +66,6 @@ class LoanCalculator
             'principal_amount'     => $principal,
             'loan_duration'        => $tenure,
             'duration_period'      => "{$tenure} months",
-            'interest_rate'        => self::displayRate($rate),
             'arrangement_fee'      => $arrangementFee,
             'processing_fee'       => $processingFee,
             'credit_life_fee'      => $creditLifeFee,
@@ -95,11 +92,6 @@ class LoanCalculator
 
         // Accept 32 (percent) or 0.32 (decimal).
         return $rate > 1 ? $rate / 100 : $rate;
-    }
-
-    public static function displayRate(float $decimalRate): float
-    {
-        return self::round($decimalRate * 100, 2);
     }
 
     private static function round(float $value, int $precision = 2): float
